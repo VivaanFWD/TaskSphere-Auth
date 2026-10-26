@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: ${AUTH_DB_URL:jdbc:postgresql://ep-royal-rain-b5u9jryu-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require}
+    # url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5432/tasksphere}
+    username: ${AUTH_DB_USERNAME:neondb_owner}
+    password: ${AUTH_DB_PASSWORD:npg_SH8qv3kpcdZr}
+    driver-class-name: ${AUTH_DB_DRIVER:org.postgresql.Driver}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: public
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${SMTP_AUTH:false}
+          starttls:
+            enable: ${SMTP_STARTTLS:false}
+
+app:
+  mail-from: ${SMTP_FROM:no-reply@localhost}
+
+security:
+  jwt:
+    issuer: tasksphere-auth
+    audience: ${JWT_AUDIENCE:tasksphere-app}
+    secret: ${JWT_SECRET:local-only-change-this-secret-before-deploying-1234567890}
+    expiration-minutes: 60
+  admin:
+    api-key: ${AUTH_ADMIN_API_KEY:TMSDL_MZ-hAh1b9aBSQfQvzosrDMUdhLUOh2o1zUCm5LzlnOTqGQK7ku8A_1gYPi}
+    # api-key: ${AUTH_ADMIN_API_KEY:}
+  client:
+    id: ${AUTH_CLIENT_ID:tasksphere-app}
+    secret: ${AUTH_CLIENT_SECRET:TS_CLIENT_4nH8kP2xV6mQ9wR3zA7cD1fG5jL0sB_EuYtWpXqMzK8rN6vC4aF}
+    # secret: ${AUTH_CLIENT_SECRET:local-only-client-secret-change-before-deploying}
+
+management:
+  health:
+    mail:
+      enabled: ${SMTP_HEALTH_ENABLED:false}
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+server:
+  port: ${PORT:${AUTH_SERVER_PORT:8081}}
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        secure: ${SESSION_COOKIE_SECURE:false}
+        same-site: strict
+
+openapi:
+  server-url: http://localhost:8081
